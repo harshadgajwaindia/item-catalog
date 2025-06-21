@@ -1,15 +1,14 @@
-import prisma from "@/lib/prisma";
-import { notFound } from "next/navigation";
-import { Mail } from "lucide-react";
-import { use } from "react"; // ✅ NEW: Required to unwrap `params`
+import prisma from '@/lib/prisma';
+import { notFound } from 'next/navigation';
+import { Mail, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 
-export default function FormDetailPage(props: Promise<{ params: { id: string } }>) {
-  const { params } = use(props); // ✅ unwrap the Promise
-  const formPromise = prisma.form.findUnique({
-    where: { id: params.id },
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  const form = await prisma.form.findUnique({
+    where: { id },
   });
-
-  const form = use(formPromise); // ✅ also use() for Prisma result
 
   if (!form) return notFound();
 
@@ -23,8 +22,8 @@ export default function FormDetailPage(props: Promise<{ params: { id: string } }
             <img
               key={idx}
               src={url}
-              alt={`Image ${idx + 1}`}
               className="w-full h-40 object-cover rounded-lg shadow-sm"
+              alt={`Image ${idx + 1}`}
             />
           ))}
         </div>
@@ -33,20 +32,22 @@ export default function FormDetailPage(props: Promise<{ params: { id: string } }
       <p className="text-md text-gray-500 mb-1">
         <span className="font-medium text-gray-700">Type:</span> {form.type}
       </p>
+
       <p className="text-gray-700 mb-6 leading-relaxed">{form.description}</p>
 
-      <div className="mb-6">
-        <img
-          src={form.coverImage}
-          alt="Cover"
-          className="w-full h-72 object-cover rounded-lg shadow"
-        />
-      </div>
+      <div className="flex gap-4">
+        <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-full flex items-center gap-2 hover:scale-105 transition-transform">
+          <Mail className="w-4 h-4" />
+          Enquire
+        </button>
 
-      <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-full flex items-center gap-2 hover:scale-105 transition-transform">
-        <Mail className="w-4 h-4" />
-        Enquire
-      </button>
+        <form method="POST" action={`/api/forms/${form.id}/delete`}>
+          <button type="submit" className="bg-red-600 text-white px-4 py-2 rounded-full flex items-center gap-2 hover:scale-105 transition-transform">
+            <Trash2 className="w-4 h-4" />
+            Delete
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
