@@ -1,24 +1,15 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Mail } from "lucide-react";
+import { use } from "react"; // ✅ NEW: Required to unwrap `params`
 
-interface PageProps {
-  params: { id: string };
-}
-
-// ✅ fetch data OUTSIDE the component
-async function getForm(id: string) {
-  const form = await prisma.form.findUnique({
-    where: { id },
+export default function FormDetailPage(props: Promise<{ params: { id: string } }>) {
+  const { params } = use(props); // ✅ unwrap the Promise
+  const formPromise = prisma.form.findUnique({
+    where: { id: params.id },
   });
 
-  if (!form) return null;
-  return form;
-}
-
-// ✅ default export with resolved props
-export default async function FormDetailPage({ params }: PageProps) {
-  const form = await getForm(params.id);
+  const form = use(formPromise); // ✅ also use() for Prisma result
 
   if (!form) return notFound();
 
