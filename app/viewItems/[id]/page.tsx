@@ -44,16 +44,6 @@ export default async function Page({
           <Mail className="w-4 h-4" />
           Enquire
         </button>
-
-        <form method="POST" action={`/api/forms/${form.id}/delete`}>
-          <button
-            type="submit"
-            className="bg-red-600 text-white px-4 py-2 rounded-full flex items-center gap-2 hover:scale-105 transition-transform"
-          >
-            <Trash2 className="w-4 h-4" />
-            Delete
-          </button>
-        </form>
       </div>
     </div>
   );
