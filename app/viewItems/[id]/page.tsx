@@ -1,17 +1,24 @@
 import prisma from "@/lib/prisma";
-import { Mail } from "lucide-react";
 import { notFound } from "next/navigation";
+import { Mail } from "lucide-react";
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: { id: string };
 }
 
-export default async function FormDetailPage({ params }: PageProps) {
+// ✅ fetch data OUTSIDE the component
+async function getForm(id: string) {
   const form = await prisma.form.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
+
+  if (!form) return null;
+  return form;
+}
+
+// ✅ default export with resolved props
+export default async function FormDetailPage({ params }: PageProps) {
+  const form = await getForm(params.id);
 
   if (!form) return notFound();
 
@@ -20,18 +27,16 @@ export default async function FormDetailPage({ params }: PageProps) {
       <h1 className="text-3xl font-bold text-indigo-700 mb-2">{form.name}</h1>
 
       {form.additionalImages.length > 0 && (
-        <>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-            {form.additionalImages.map((url, idx) => (
-              <img
-                key={idx}
-                src={url}
-                alt={`Additional Image ${idx + 1}`}
-                className="w-full h-40 object-cover rounded-lg shadow-sm"
-              />
-            ))}
-          </div>
-        </>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+          {form.additionalImages.map((url, idx) => (
+            <img
+              key={idx}
+              src={url}
+              alt={`Image ${idx + 1}`}
+              className="w-full h-40 object-cover rounded-lg shadow-sm"
+            />
+          ))}
+        </div>
       )}
 
       <p className="text-md text-gray-500 mb-1">
