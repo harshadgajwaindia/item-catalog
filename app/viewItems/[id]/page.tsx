@@ -1,9 +1,13 @@
-import prisma from '@/lib/prisma';
-import { notFound } from 'next/navigation';
-import { Mail, Trash2 } from 'lucide-react';
-import Link from 'next/link';
+import prisma from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import { Mail, Trash2 } from "lucide-react";
+import Link from "next/link";
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
 
   const form = await prisma.form.findUnique({
@@ -42,7 +46,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </button>
 
         <form method="POST" action={`/api/forms/${form.id}/delete`}>
-          <button type="submit" className="bg-red-600 text-white px-4 py-2 rounded-full flex items-center gap-2 hover:scale-105 transition-transform">
+          <button
+            type="submit"
+            className="bg-red-600 text-white px-4 py-2 rounded-full flex items-center gap-2 hover:scale-105 transition-transform"
+          >
             <Trash2 className="w-4 h-4" />
             Delete
           </button>

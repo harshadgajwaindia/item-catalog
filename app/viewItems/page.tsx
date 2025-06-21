@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Eye } from 'lucide-react';
-import { ViewItemSkeleton } from '@/components/ViewItemsSkeleton';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Eye } from "lucide-react";
+import { ViewItemSkeleton } from "@/components/ViewItemsSkeleton";
 
 type Form = {
   id: string;
@@ -18,11 +18,11 @@ export default function ViewItemsPage() {
   useEffect(() => {
     async function fetchForms() {
       try {
-        const res = await fetch('/api/forms');
+        const res = await fetch("/api/forms");
         const data = await res.json();
         setForms(data);
       } catch (error) {
-        console.error('Failed to fetch forms:', error);
+        console.error("Failed to fetch forms:", error);
       } finally {
         setLoading(false);
       }
